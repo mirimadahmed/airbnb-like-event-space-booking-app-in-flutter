@@ -12,7 +12,7 @@ class Listing extends StatelessWidget {
         Container(
           width: 192,
           height: 108,
-          child:Image.network("https://spacesly.s3.amazonaws.com/media/Howdy-Gol-Market-1_74pC7Tj.JPG?AWSAccessKeyId=AKIAWCQQ7RP4RUYBWSF2&Signature=2QZ7AaiSOwRf9gqbn3lC%2F131tS4%3D&Expires=1570454199",fit: BoxFit.fill,),
+          child:Image.network("https://github.com/flutter/plugins/raw/master/packages/video_player/doc/demo_ipod.gif?raw=true",fit: BoxFit.fill,),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 8.0),

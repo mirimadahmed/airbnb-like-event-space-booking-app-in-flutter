@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:spacesly_app/screens/items_details_screen.dart';
 import 'package:spacesly_app/widgets/home_icon_card.dart';
 import 'package:spacesly_app/widgets/listing.dart';
-
+import 'package:page_transition/page_transition.dart';
 import '../environment_variable.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,11 +33,11 @@ class _HomePageState extends State<HomePage> {
                       return HomeIconCard(
                         onPressed: (){
                           if(index == 0){
-
+                            Navigator.push(context, PageTransition(child: ItemsScreenDetails(), type: PageTransitionType.rightToLeft));
                           }else if(index == 1){
-
+                            Navigator.push(context, PageTransition(child: ItemsScreenDetails(), type: PageTransitionType.rightToLeft));
                           }else {
-
+                            Navigator.push(context, PageTransition(child: ItemsScreenDetails(), type: PageTransitionType.rightToLeft));
                           }
                         },
                         icon: icons[index],
@@ -81,7 +82,11 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text("Top spaces in Islamabad", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Environment.textColor),),
-                    Text("See All", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Environment.textColor))
+                    InkWell(
+                        onTap: (){
+                          Navigator.push(context, PageTransition(child: ItemsScreenDetails(), type: PageTransitionType.rightToLeft));
+                        },
+                        child: Text("See All", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Environment.textColor)))
                   ],
                 ),
               ),
