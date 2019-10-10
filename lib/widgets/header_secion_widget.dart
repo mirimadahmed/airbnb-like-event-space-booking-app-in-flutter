@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 class HeaderSection extends StatelessWidget {
+  final List<String> imageList;
+  HeaderSection({@required this.imageList});
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Swiper(
-        autoplay: true,
-        loop: true,
+        autoplay: imageList.length > 1 ? true : false,
+        loop: imageList.length > 1 ? true : false,
         itemBuilder: (context, index){
-          return new Image.network("https://picsum.photos/250?image=9",fit: BoxFit.fill,);
+          return new Image.network(imageList[index],fit: BoxFit.fill,);
         },
-        itemCount: 5,
+        itemCount: imageList.length,
         pagination: new SwiperPagination(),
       ),
     );
   }
 }
+

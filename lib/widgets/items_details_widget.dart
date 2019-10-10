@@ -14,7 +14,7 @@ class ItemsDeailsWidget extends StatelessWidget {
         Container(
           margin: EdgeInsets.symmetric(vertical: 10),
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height * .2,
+          height: MediaQuery.of(context).orientation == Orientation.portrait ?  MediaQuery.of(context).size.height * .4 : MediaQuery.of(context).size.height * .9,
           color: Colors.grey,
           child: Image.network("https://picsum.photos/250?image=9",fit: BoxFit.cover,),
         ),

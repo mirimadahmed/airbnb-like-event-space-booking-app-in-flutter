@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../environment_variable.dart';
 
 class Listing extends StatelessWidget {
+  final String image, name;
+  Listing({this.image,this.name});
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -10,15 +13,21 @@ class Listing extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
+          color: Colors.grey.withOpacity(0.1),
           width: 192,
           height: 108,
-          child:Image.network("https://github.com/flutter/plugins/raw/master/packages/video_player/doc/demo_ipod.gif?raw=true",fit: BoxFit.fill,),
+//          child: image == null ? Image.network("https://picsum.photos/250?image=",fit: BoxFit.fill,) : Image.network(image,fit: BoxFit.fill,),
+        child: FadeInImage.memoryNetwork(
+          placeholder: kTransparentImage,
+          image: image,
+          fit: BoxFit.fill,
+        ),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: Container(
               width: 192,
-              child: Text("Name of listing name of string name of string",
+              child: Text(name ?? " ",
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Environment.textColor))),
         ),

@@ -1,25 +1,35 @@
+import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:spacesly_app/single_entity_json/response.dart';
 import 'package:spacesly_app/widgets/book_space_field_widget.dart';
 import 'package:spacesly_app/widgets/header_secion_widget.dart';
 import 'package:intl/intl.dart';
 import '../environment_variable.dart';
-import '../environment_variable.dart';
-import '../environment_variable.dart';
-import '../environment_variable.dart';
-import '../environment_variable.dart';
-import '../environment_variable.dart';
-import '../environment_variable.dart';
-
+import 'package:stringprocess/stringprocess.dart';
 class SpaceDetailsScreen extends StatefulWidget {
+  final String EntityName;
+  SpaceDetailsScreen({this.EntityName});
   @override
   _SpaceDetailsScreenState createState() => _SpaceDetailsScreenState();
 }
 
 class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
+  ScrollController scrollController = ScrollController();
+  StringProcessor tps = new StringProcessor();
+  bool flag = false;
+  @override
+  void initState() {
+    super.initState();
+    _getSingleEntityData();
+  }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: SingleChildScrollView(
+        controller: scrollController,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,8 +38,12 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * .3,
-                  child: HeaderSection(),
+                  height: MediaQuery.of(context).orientation == Orientation.portrait ? MediaQuery.of(context).size.height * .3:MediaQuery.of(context).size.height * .8,
+                  child: _response == null || _response.singleEntity == null ? Container(
+                    child: Center(
+                      child: Text("Loading...", style: TextStyle(color: Environment.textColor, fontSize: 18),),
+                    ),
+                  ) : HeaderSection(imageList: _response.singleEntity.images),
                 ),
                 Positioned(
                   left: 10,
@@ -49,7 +63,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text("Name of the Space", style: TextStyle(color: Environment.textColor, fontWeight: FontWeight.bold),),
+                  _response==null || _response.singleEntity==null || _response.singleEntity.name==null ? Text('Loading...') :  Text( _response.singleEntity.name ??  "", style: TextStyle(color: Environment.textColor, fontWeight: FontWeight.bold),),
                   SizedBox(height: 20,),
                   Row(
                     children: <Widget>[
@@ -62,13 +76,22 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                       Text("100", style: TextStyle(color: Environment.textColor, fontWeight: FontWeight.bold, fontSize: 16),),
                       Spacer(),
                       Container(
+                        height: 30,
                         margin: EdgeInsets.only(top: 10),
-                        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                         decoration: BoxDecoration(
                           color: Color.fromRGBO(230, 126, 34, 1.0),
                           borderRadius: BorderRadius.circular(2),
                         ),
-                        child: Center(child: Text("Book now", style: TextStyle(color: Colors.white),)),
+                        child: RawMaterialButton(
+                          onPressed: (){
+                            scrollController.animateTo(
+                              scrollController.position.maxScrollExtent,
+                              curve: Curves.easeOut,
+                              duration: const Duration(milliseconds: 300),
+                            );
+                          },
+//                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+                            child: Center(child: Text("Book now", style: TextStyle(color: Colors.white),))),
                       ),
                     ],
                   ),
@@ -84,21 +107,32 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                   SizedBox(height: 30),
                   Text("About the space",style: TextStyle(color: Environment.textColor, fontWeight: FontWeight.bold, fontSize: 16),),
                   SizedBox(height: 10),
-                  Text("Lorem ipsum dollar sit Lorem ipsum dollar sit"),
-                  Text("Lorem ipsum dollar sit Lorem ipsum dollar sit"),
-                  Text("Lorem ipsum dollar sit Lorem ipsum dollar sit"),
-                  Text("Lorem ipsum dollar sit Lorem ipsum dollar sit"),
-                  Text("Lorem ipsum dollar sit Lorem ipsum dollar sit"),
-                  Text("Lorem ipsum dollar sit Lorem ipsum dollar sit"),
-                  Text("Lorem ipsum dollar sit Lorem ipsum dollar sit"),
-                  Row(
-                    children: <Widget>[
-                      Text("Lorem ipsum dollar sit"),
-                      SizedBox(width: 8,),
-                      InkWell(
-                        child: Text("View More", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),),
-                      ),
-                    ],
+                  LayoutBuilder(
+                    builder: (context, BoxConstraints constraints) {
+                      print("max");
+                      int maxlines = tps.getWordCount(_response.singleEntity.description ?? "");
+                      print(maxlines);
+                      return _response==null || _response.singleEntity==null || _response.singleEntity.description==null ? Text('Loading...') :Container(
+                        width: MediaQuery.of(context).size.width,
+                       child:
+                             Column(
+                               children: <Widget>[
+                                 Text(_response.singleEntity.description ?? "", maxLines: !flag ? 3 : 20, overflow: TextOverflow.ellipsis,style: TextStyle(color: Environment.textColor, fontSize: 15),),
+                                 maxlines > 20 ? Align(
+                                   alignment: Alignment.bottomRight,
+                                   child: InkWell(
+                                       onTap: (){
+                                         setState(() {
+                                           flag = !flag;
+                                         });
+                                       },
+                                       child: Text( flag ? "View less" : 'View more',
+                                         style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 16),)),
+                                 ) : Container(),
+                               ],
+                             ),
+                      );
+                    }
                   ),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 20),
@@ -190,10 +224,12 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                         BookingApcaeFoield(
                           labelText: 'Phone',
                           hintText: '0000 0000000',
+                          inputType: TextInputType.number,
                         ),
                         BookingApcaeFoield(
                           labelText: 'Email',
                           hintText: 'example@mail.com',
+                          inputType: TextInputType.emailAddress,
                         ),
                         Container(
                           height: 50,
@@ -214,7 +250,26 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                         ),
                         BookingApcaeFoield(
                           labelText: 'No of Guests',
-                          hintText: 'yourName',
+                          hintText: '000',
+                          inputType: TextInputType.number,
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Color.fromRGBO(230, 126, 34, 1.0),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          child: RawMaterialButton(
+                              onPressed: (){
+                                scrollController.animateTo(
+                                  scrollController.position.minScrollExtent,
+                                  curve: Curves.easeOut,
+                                  duration: const Duration(milliseconds: 300),
+                                );
+                              },
+//                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+                              child: Center(child: Text("Submit", style: TextStyle(color: Colors.white),))),
                         ),
                       ],
                     ),
@@ -222,6 +277,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                 ],
               ),
             ),
+
           ],
         ),
       ),
@@ -240,6 +296,27 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
       setState(() {
         from = DateFormat('dd/MM/yyyy').format(selected).toString();
       });
+    }
+  }
+
+
+  BaseResponse _response;
+  _getSingleEntityData()async{
+    try{
+      var res = await Dio().get(Environment.baseUrlWithApi +"entities/${widget.EntityName}/");
+      if(res.statusCode.toString() == "200"){
+        setState(() {
+          _response = BaseResponse.fromJson(res.data);
+        });
+        print(_response.singleEntity.description);
+
+        final numLines = '\n'.allMatches(_response.singleEntity.description).length;
+        print("p");
+        print(numLines);
+      }
+    }catch(e){
+      print("err");
+      print(e.toString());
     }
   }
 }

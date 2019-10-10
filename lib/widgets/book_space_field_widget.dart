@@ -5,7 +5,8 @@ import '../environment_variable.dart';
 class BookingApcaeFoield extends StatelessWidget {
   final TextEditingController controller;
   final String labelText, hintText;
-  BookingApcaeFoield({this.controller, this.labelText, this.hintText});
+  final TextInputType inputType;
+  BookingApcaeFoield({this.controller, this.labelText, this.hintText, this.inputType});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -13,6 +14,7 @@ class BookingApcaeFoield extends StatelessWidget {
       padding: EdgeInsets.only(left: 15),
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: TextField(
+        keyboardType: inputType,
         cursorColor: Environment.textColor,
         decoration: InputDecoration(
           labelText: labelText,
