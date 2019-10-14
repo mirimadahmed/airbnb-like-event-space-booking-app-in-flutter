@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 part "response.g.dart";
 // flutter packages pub run build_runner watch

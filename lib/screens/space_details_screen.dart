@@ -7,7 +7,6 @@ import 'package:spacesly_app/widgets/book_space_field_widget.dart';
 import 'package:spacesly_app/widgets/header_secion_widget.dart';
 import 'package:intl/intl.dart';
 import '../environment_variable.dart';
-import 'package:toast/toast.dart';
 class SpaceDetailsScreen extends StatefulWidget {
   final String EntityName;
   final int entity_id;
@@ -324,10 +323,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                                 || _controllerPhone.text == null
                                 ||_controllerNoOfGeusts.text == null
                                 || from.toString().isEmpty){
-                                  Toast.show(
-                                      "Please Completing the form",context,
-                                  duration: Toast.LENGTH_SHORT,
-                                      gravity:  Toast.BOTTOM);
+
                                 }else{
                                   _reserveEvent();
                                 }
@@ -464,19 +460,13 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
       ));
       print("event reserve res");
       if(res.statusCode.toString() == "200"){
-        Toast.show(
-            "Submit successfully",context,
-            duration: Toast.LENGTH_LONG,
-            gravity:  Toast.BOTTOM);
+
         setState(() {
           submit = false;
         });
       }
     }catch(e){
-      Toast.show(
-          "Something wrong contact your administrator",context,
-          duration: Toast.LENGTH_LONG,
-          gravity:  Toast.BOTTOM);
+
       print("err2");
       print(e.toString());
       setState(() {
