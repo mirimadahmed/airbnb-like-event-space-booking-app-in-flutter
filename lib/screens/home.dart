@@ -61,11 +61,11 @@ class _HomePageState extends State<HomePage> {
                       return HomeIconCard(
                         onPressed: (){
                           if(index == 0){
-                            Navigator.push(context, PageTransition(child: ItemsScreenDetails(), type: PageTransitionType.rightToLeft));
+                            Navigator.push(context, PageTransition(child: ItemsScreenDetails(weddingList: topWeddingData,), type: PageTransitionType.rightToLeft));
                           }else if(index == 1){
-                            Navigator.push(context, PageTransition(child: ItemsScreenDetails(), type: PageTransitionType.rightToLeft));
+                            Navigator.push(context, PageTransition(child: ItemsScreenDetails(partyList: topParty,), type: PageTransitionType.rightToLeft));
                           }else {
-                            Navigator.push(context, PageTransition(child: ItemsScreenDetails(), type: PageTransitionType.rightToLeft));
+                            Navigator.push(context, PageTransition(child: ItemsScreenDetails(corporateList: topCorporate,), type: PageTransitionType.rightToLeft));
                           }
                         },
                         icon: icons[index],
@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                                   padding: EdgeInsets.symmetric(horizontal: 10),
                                   child: InkWell(
                                       onTap: (){
-                                        Navigator.of(context).push(PageTransition(child: SpaceDetailsScreen(EntityName: topWeddingData[index].permalink,), type: PageTransitionType.rightToLeft));
+                                        Navigator.of(context).push(PageTransition(child: SpaceDetailsScreen(EntityName: topWeddingData[index].permalink, entity_id: topWeddingData[index].entity_id,), type: PageTransitionType.rightToLeft));
                                       },
                                       child: Listing(
                                         image: topWeddingData[index].featured_image,
@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage> {
                                   padding: EdgeInsets.symmetric(horizontal: 10),
                                   child: InkWell(
                                       onTap: (){
-                                        Navigator.of(context).push(PageTransition(child: SpaceDetailsScreen(), type: PageTransitionType.rightToLeft));
+                                        Navigator.of(context).push(PageTransition(child: SpaceDetailsScreen(EntityName: topParty[index].permalink, entity_id: topParty[index].entity_id,), type: PageTransitionType.rightToLeft));
                                       },
                                       child: Listing(
                                         image: topParty[index].featured_image,
@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> {
                                   padding: EdgeInsets.symmetric(horizontal: 10),
                                   child: InkWell(
                                       onTap: (){
-                                        Navigator.of(context).push(PageTransition(child: SpaceDetailsScreen(), type: PageTransitionType.rightToLeft));
+                                        Navigator.of(context).push(PageTransition(child: SpaceDetailsScreen(EntityName: topCorporate[index].permalink, entity_id: topCorporate[index].entity_id,), type: PageTransitionType.rightToLeft));
                                       },
                                       child: Listing(
                                         image: topCorporate[index].featured_image,

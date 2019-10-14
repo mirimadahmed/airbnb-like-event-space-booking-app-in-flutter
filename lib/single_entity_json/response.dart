@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 part "response.g.dart";
 // flutter packages pub run build_runner watch
@@ -125,4 +126,104 @@ class ModelData {
 
 }
 
+@JsonSerializable()
+class Products{
+  final int product_id;
+  final String name;
+  final dynamic description;
+  final bool is_waivable;
+  final bool is_required;
+  final int applicable_on_less_than;
+  final String product_type;
+  final int entity_id;
+  final bool list_items_exist;
+  final List<PricingModel> Pricing;
 
+  Products(
+      this.product_id,
+      this.name,
+      this.description,
+      this.is_waivable,
+      this.is_required,
+      this.applicable_on_less_than,
+      this.product_type,
+      this.entity_id,
+      this.list_items_exist,
+      this.Pricing
+      );
+  factory Products.fromJson(Map<String, dynamic> json) => _$ProductsFromJson(json);
+}
+@JsonSerializable()
+class Products1{
+  final int product_id;
+  final String name;
+  final dynamic description;
+  final bool is_waivable;
+  final bool is_required;
+  final int applicable_on_less_than;
+  final String product_type;
+  final int entity_id;
+  final bool list_items_exist;
+  final List<ListItemModel> list_items;
+  final List<PricingModel> Pricing;
+
+  Products1(
+      this.product_id,
+      this.name,
+      this.description,
+      this.is_waivable,
+      this.is_required,
+      this.applicable_on_less_than,
+      this.product_type,
+      this.entity_id,
+      this.list_items_exist,
+      this.list_items,
+      this.Pricing
+      );
+  factory Products1.fromJson(Map<String, dynamic> json) => _$Products1FromJson(json);
+}
+@JsonSerializable()
+class PricingModel{
+  final int pricing_id;
+  final double rate;
+  final String rate_calculation;
+  final double monday;
+  final double tuesday;
+  final double wednesday;
+  final double thursday;
+  final double friday;
+  final double saturday;
+  final double sunday;
+  final String effective_date;
+  final String expiration_date;
+  final int product_id;
+
+  PricingModel(
+      this.pricing_id,
+      this.rate,
+      this.rate_calculation,
+      this.monday,
+      this.tuesday,
+      this.wednesday,
+      this.thursday,
+      this.friday,
+      this.saturday,
+      this.sunday,
+      this.effective_date,
+      this.expiration_date,
+      this.product_id
+      );
+  factory PricingModel.fromJson(Map<String, dynamic> json) => _$PricingModelFromJson(json);
+}
+
+@JsonSerializable()
+class ListItemModel{
+  final int list_item_id;
+  final String list_item;
+
+  ListItemModel(
+      this.list_item_id,
+      this.list_item
+      );
+  factory ListItemModel.fromJson(Map<String, dynamic> json) => _$ListItemModelFromJson(json);
+}

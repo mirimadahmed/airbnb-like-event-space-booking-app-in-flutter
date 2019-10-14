@@ -8,6 +8,5 @@ class Environment{
   static const topWeddingApi = 'https://api.spacesly.com/api/top_spaces/type/1';
   static const topPartyApi = 'https://api.spacesly.com/api/top_spaces/type/2';
   static const topCorporateApi = 'https://api.spacesly.com/api/top_spaces/type/3';
-
-
+  static const apiProducts = 'https://api.spacesly.com/api/products/';
 }

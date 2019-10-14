@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../environment_variable.dart';
 
-class BookingApcaeFoield extends StatelessWidget {
+class BookingSpaceField extends StatelessWidget {
   final TextEditingController controller;
   final String labelText, hintText;
   final TextInputType inputType;
-  BookingApcaeFoield({this.controller, this.labelText, this.hintText, this.inputType});
+  BookingSpaceField({this.controller, this.labelText, this.hintText, this.inputType});
   @override
   Widget build(BuildContext context) {
     return Container(

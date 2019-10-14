@@ -1,32 +1,35 @@
-import 'dart:convert';
+import 'dart:math';
 import 'package:dio/dio.dart';
-import 'package:flutter/gestures.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spacesly_app/single_entity_json/response.dart';
 import 'package:spacesly_app/widgets/book_space_field_widget.dart';
 import 'package:spacesly_app/widgets/header_secion_widget.dart';
 import 'package:intl/intl.dart';
 import '../environment_variable.dart';
-import 'package:stringprocess/stringprocess.dart';
+
 class SpaceDetailsScreen extends StatefulWidget {
   final String EntityName;
-  SpaceDetailsScreen({this.EntityName});
+  final int entity_id;
+  SpaceDetailsScreen({this.EntityName, this.entity_id});
   @override
   _SpaceDetailsScreenState createState() => _SpaceDetailsScreenState();
 }
 
 class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
   ScrollController scrollController = ScrollController();
-  StringProcessor tps = new StringProcessor();
   bool flag = false;
+  bool flag1 = false;
   @override
   void initState() {
     super.initState();
+    print("id");
+    print(widget.entity_id);
     _getSingleEntityData();
+    _getAddonDetails();
   }
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: SingleChildScrollView(
         controller: scrollController,
@@ -52,7 +55,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                     onPressed: (){
                       Navigator.of(context).pop();
                     },
-                    icon: Icon(Icons.arrow_back,color: Colors.white,),
+                    icon: Icon(Icons.arrow_back,color: Colors.black,),
                   ),
                 ),
               ],
@@ -110,7 +113,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                   LayoutBuilder(
                     builder: (context, BoxConstraints constraints) {
                       print("max");
-                      int maxlines = tps.getWordCount(_response.singleEntity.description ?? "");
+                      int maxlines = getWordCount(_response==null || _response.singleEntity==null || _response.singleEntity.description==null ? "" : _response.singleEntity.description);
                       print(maxlines);
                       return _response==null || _response.singleEntity==null || _response.singleEntity.description==null ? Text('Loading...') :Container(
                         width: MediaQuery.of(context).size.width,
@@ -142,38 +145,46 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                   ),
               Text("Custom Field Group", style: TextStyle(color: Environment.textColor, fontWeight: FontWeight.bold)),
                   SizedBox(height: 10,),
-                  Wrap(
-                    children: <Widget>[
-                      Icon(Icons.star, color: Colors.grey,),
-                      SizedBox(width: 5,),
-                      Container(
-                          margin: EdgeInsets.symmetric(horizontal: 5,vertical: 4),
-                          child: Text("CustomField", textAlign: TextAlign.center,style: TextStyle(color:Environment.textColor,fontWeight: FontWeight.bold))),
-                      SizedBox(width: MediaQuery.of(context).size.width/6,),
-                      Icon(Icons.star, color: Colors.grey,),
-                      Container(
-                          margin: EdgeInsets.symmetric(horizontal: 5,vertical: 4),
-                          child: Text("CustomField", textAlign: TextAlign.center,style: TextStyle(color:Environment.textColor, fontWeight: FontWeight.bold),)),
-                      SizedBox(width: MediaQuery.of(context).size.width,),
-                      SizedBox(height: 5,),
-                      Icon(Icons.star, color: Colors.grey,),
-                      SizedBox(width: 5,),
-                      Container(
-                          margin: EdgeInsets.symmetric(horizontal: 5,vertical: 4),
-                          child: Text("CustomField", textAlign: TextAlign.center,style: TextStyle(color:Environment.textColor, fontWeight: FontWeight.bold))),
-                      SizedBox(width: MediaQuery.of(context).size.width/6,),
-                      Icon(Icons.star, color: Colors.grey.withOpacity(0.2),),
-                      Container(
-                          margin: EdgeInsets.symmetric(horizontal: 5,vertical: 4),
-                          child: Text("CustomField", textAlign: TextAlign.center,style: TextStyle(color:Environment.textColor.withOpacity(0.3), fontWeight: FontWeight.bold))),
-                    ],
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: MediaQuery.of(context).size.width/1.5),
-                    child: InkWell(
-                     child: Text("View More", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),),
-                    ),
-                  ),
+                 list.isEmpty ? Container(child: Text("Loading..."),) :
+                      AnimatedContainer(
+                        duration: Duration(seconds: 1),
+                        curve: Curves.easeInOut,
+                        child: Column(
+                          children: <Widget>[
+                            Wrap(
+                              children: List.generate(flag1 && list.length > 4 ? list.length : !flag1 && list.length < 4 ? list.length : 4, ((index){
+                                return Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  runAlignment: WrapAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    SizedBox(width: 10,),
+                                    Icon(Icons.star, color: !flag1 && list.length > 4 && index == 4-1 ?Colors.grey.withOpacity(0.3) : Colors.grey,),
+                                    SizedBox(width: 1,),
+                                    Container(
+                          margin: EdgeInsets.symmetric(horizontal: 2,vertical: 4),
+                          child: Text(
+                              list[index].name,
+                              textAlign: TextAlign.center,style: TextStyle(color:!flag1 && list.length > 4 && index == 4-1 ?Environment.textColor.withOpacity(0.5) :Environment.textColor,fontWeight: FontWeight.bold))),
+//                      SizedBox(width: MediaQuery.of(context).size.width*.,),
+                                  ],
+                                );
+                              })),
+                            ),
+                            list.isNotEmpty && list.length > 4 ? Align(
+                              widthFactor: 5.0,
+                              alignment: Alignment.bottomRight,
+                              child: InkWell(
+                                onTap: (){
+                                  setState(() {
+                                    flag1 = !flag1;
+                                  });
+                                },
+                                child: Text(flag1 ? "View less" :"View More", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),),
+                              ),
+                            ) : Container(),
+                          ],
+                        ),
+                      ),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 20),
                     width: MediaQuery.of(context).size.width,
@@ -183,7 +194,8 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                   Text("Addons from the host", style: TextStyle(color: Environment.textColor, fontWeight: FontWeight.bold)),
                   SizedBox(height: 30,),
                   Column(
-                    children: List.generate(2, ((index){
+                    children: List.generate(productsList.length, ((index){
+
                       return Container(
                         padding: EdgeInsets.only(top: 10, left: 5),
                         margin: EdgeInsets.only(top: 10),
@@ -196,11 +208,44 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text("Addon title", style: TextStyle(color: Environment.textColor, fontWeight: FontWeight.bold)),
+                            Text(productsList[index].name ?? "", style: TextStyle(color: Environment.textColor, fontWeight: FontWeight.bold)),
                             SizedBox(height:5,),
-                            Text("Price Here"),
+                            Wrap(
+                              children: List.generate(productsList[index].Pricing.length, ((inde){
+                                return Text(productsList[index].Pricing[inde].rate.toString());
+                              })),
+                            ),
                             SizedBox(height:8,),
-                            Text("Add on descryption here"),
+                            Text(productsList[index].description ?? ""),
+                          ],
+                        ),
+                      );
+                    })),
+                  ),
+                  Column(
+                    children: List.generate(productsList1.length, ((index){
+
+                      return Container(
+                        padding: EdgeInsets.only(top: 10, left: 5),
+                        margin: EdgeInsets.only(top: 10),
+                        width: MediaQuery.of(context).size.width,
+                        height: 100,
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Environment.textColor)
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(productsList1[index].name ?? "", style: TextStyle(color: Environment.textColor, fontWeight: FontWeight.bold)),
+                            SizedBox(height:5,),
+                            Wrap(
+                              children: List.generate(productsList1[index].Pricing.length, ((inde){
+                                return Text(productsList1[index].Pricing[inde].rate.toString());
+                              })),
+                            ),
+                            SizedBox(height:8,),
+                            Text(productsList1[index].description ?? ""),
                           ],
                         ),
                       );
@@ -217,16 +262,16 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                       children: <Widget>[
                         Text("Book this space", style: TextStyle(color: Environment.textColor, fontWeight: FontWeight.bold)),
                         SizedBox(height: 20,),
-                        BookingApcaeFoield(
+                        BookingSpaceField(
                           labelText: 'Name',
                           hintText: 'yourName',
                         ),
-                        BookingApcaeFoield(
+                        BookingSpaceField(
                           labelText: 'Phone',
                           hintText: '0000 0000000',
                           inputType: TextInputType.number,
                         ),
-                        BookingApcaeFoield(
+                        BookingSpaceField(
                           labelText: 'Email',
                           hintText: 'example@mail.com',
                           inputType: TextInputType.emailAddress,
@@ -248,7 +293,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                             ],
                           ),
                         ),
-                        BookingApcaeFoield(
+                        BookingSpaceField(
                           labelText: 'No of Guests',
                           hintText: '000',
                           inputType: TextInputType.number,
@@ -300,22 +345,78 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
   }
 
 
+  List<ModelData> list= [];
   BaseResponse _response;
   _getSingleEntityData()async{
+    Color textColor = Color(0xFFFFFFFF).computeLuminance() > 0.5 ? Colors.black : Colors.white;
     try{
       var res = await Dio().get(Environment.baseUrlWithApi +"entities/${widget.EntityName}/");
       if(res.statusCode.toString() == "200"){
         setState(() {
           _response = BaseResponse.fromJson(res.data);
         });
+        print("res");
         print(_response.singleEntity.description);
-
+        setState(() {
+          list = _response.customField.amenitiesList + _response.customField.activitiesList;
+        });
+        print(list.length);
         final numLines = '\n'.allMatches(_response.singleEntity.description).length;
         print("p");
         print(numLines);
       }
     }catch(e){
       print("err");
+      print(e.toString());
+    }
+  }
+
+  int getWordCount(String text) {
+    var workingText = text;
+    workingText = workingText
+      ..replaceAll('\n', ' ')
+      ..replaceAll('.', ' ')
+      ..replaceAll(',', ' ')
+      ..replaceAll(':', ' ')
+      ..replaceAll(';', ' ')
+      ..replaceAll('?', ' ');
+    var words = workingText.split(' ');
+    words.removeWhere((word) => word.length == 0 || word == " ");
+    return min(words.length, text.length);
+  }
+
+
+  List<Products> productsList = [];
+  List<Products1> productsList1 = [];
+  _getAddonDetails()async{
+    try{
+      var res = await Dio().get(Environment.apiProducts + "${widget.entity_id}",
+      options: Options(
+        headers: {
+          "Content-Type" : "application/json",
+          "Authorization" : "Token eec289046e39a2c707508c1c7aee9a327be2e1e5"
+        }
+      ),
+      );
+      print("produts");
+      if(res.statusCode.toString() == "200"){
+        setState(() {
+          Iterable list = res.data;
+          list.forEach((check){
+            if(check.toString().contains("list_items_exist: false")){
+              productsList.add(Products.fromJson(check));
+            }else{
+              productsList1.add(Products1.fromJson(check));
+            }
+          });
+//          productsList = list.map((product) => Products.fromJson(product)).toList();
+        });
+      }
+      print(res.data);
+      print('${productsList.map((f) => f.name)}');
+      print('${productsList1.map((f) => f.name)}');
+    }catch(e){
+      print("err1");
       print(e.toString());
     }
   }

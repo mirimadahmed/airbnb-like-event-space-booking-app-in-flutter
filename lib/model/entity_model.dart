@@ -1,7 +1,5 @@
 
 
-
-
 class Entity{
 
   final String name, permalink, description, featured_image, address, phone_1, phone_2, status;
