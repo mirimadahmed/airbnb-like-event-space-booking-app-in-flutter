@@ -20,6 +20,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
   ScrollController scrollController = ScrollController();
   bool flag = false;
   bool flag1 = false;
+  bool flag2 = false;
   TextEditingController _controllerName;
   TextEditingController _controllerPhone;
   TextEditingController _controllerEmail;
@@ -151,14 +152,16 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                     color: Environment.textColor,
                     height: 2,
                   ),
-              Text("Custom Field Group", style: TextStyle(color: Environment.textColor, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 10,),
                  list.isEmpty ? Container(child: Text("Loading..."),) :
                       AnimatedContainer(
                         duration: Duration(seconds: 1),
                         curve: Curves.easeInOut,
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
+                            Text("Amenities", style: TextStyle(fontSize: 18,color: Environment.textColor, fontWeight: FontWeight.bold)),
+                            SizedBox(height: 10,),
                             Wrap(
                               children: List.generate(flag1 && list.length > 4 ? list.length : !flag1 && list.length < 4 ? list.length : 4, ((index){
                                 return Wrap(
@@ -166,12 +169,12 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                                   runAlignment: WrapAlignment.spaceBetween,
                                   children: <Widget>[
                                     SizedBox(width: 10,),
-                                    Icon(Icons.star, color: !flag1 && list.length > 4 && index == 4-1 ?Colors.grey.withOpacity(0.3) : Colors.grey,),
+//                                    Icon(Icons.star, color: !flag1 && list.length > 4 && index == 4-1 ?Colors.grey.withOpacity(0.3) : Colors.grey,),
                                     SizedBox(width: 1,),
                                     Container(
                           margin: EdgeInsets.symmetric(horizontal: 2,vertical: 4),
                           child: Text(
-                              list[index].name,
+                              list[index].name + ",",
                               textAlign: TextAlign.center,style: TextStyle(color:!flag1 && list.length > 4 && index == 4-1 ?Environment.textColor.withOpacity(0.5) :Environment.textColor,fontWeight: FontWeight.bold))),
 //                      SizedBox(width: MediaQuery.of(context).size.width*.,),
                                   ],
@@ -193,6 +196,50 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                           ],
                         ),
                       ),
+                  list1.isEmpty ? Container(child: Text("Loading..."),) :
+                  AnimatedContainer(
+                    duration: Duration(seconds: 1),
+                    curve: Curves.easeInOut,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text("Activities", style: TextStyle(fontSize: 18,color: Environment.textColor, fontWeight: FontWeight.bold)),
+                        SizedBox(height: 10,),
+                        Wrap(
+                          children: List.generate(flag2 && list1.length > 4 ? list1.length : !flag2 && list1.length < 4 ? list1.length : 4, ((index){
+                            return Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              runAlignment: WrapAlignment.spaceBetween,
+                              children: <Widget>[
+                                SizedBox(width: 10,),
+//                                Icon(Icons.star, color: !flag2 && list1.length > 4 && index == 4-1 ?Colors.grey.withOpacity(0.3) : Colors.grey,),
+                                SizedBox(width: 1,),
+                                Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 2,vertical: 4),
+                                    child: Text(
+                                        list1[index].name +",",
+                                        textAlign: TextAlign.center,style: TextStyle(color:!flag2 && list1.length > 4 && index == 4-1 ?Environment.textColor.withOpacity(0.5) :Environment.textColor,fontWeight: FontWeight.bold))),
+//                      SizedBox(width: MediaQuery.of(context).size.width*.,),
+                              ],
+                            );
+                          })),
+                        ),
+                        list1.isNotEmpty && list1.length > 4 ? Align(
+                          widthFactor: 5.0,
+                          alignment: Alignment.bottomRight,
+                          child: InkWell(
+                            onTap: (){
+                              setState(() {
+                                flag2 = !flag2;
+                              });
+                            },
+                            child: Text(flag2 ? "View less" :"View More", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),),
+                          ),
+                        ) : Container(),
+                      ],
+                    ),
+                  ),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 20),
                     width: MediaQuery.of(context).size.width,
@@ -365,24 +412,20 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
 
 
   List<ModelData> list= [];
+  List<ModelData> list1= [];
   BaseResponse _response;
   _getSingleEntityData()async{
-    Color textColor = Color(0xFFFFFFFF).computeLuminance() > 0.5 ? Colors.black : Colors.white;
     try{
       var res = await Dio().get(Environment.baseUrlWithApi +"entities/${widget.EntityName}/");
       if(res.statusCode.toString() == "200"){
         setState(() {
           _response = BaseResponse.fromJson(res.data);
         });
-        print("res");
-        print(_response.singleEntity.description);
         setState(() {
-          list = _response.customField.amenitiesList + _response.customField.activitiesList;
+          list = _response.customField.amenitiesList;
+          list1 = _response.customField.activitiesList;
         });
         print(list.length);
-        final numLines = '\n'.allMatches(_response.singleEntity.description).length;
-        print("p");
-        print(numLines);
       }
     }catch(e){
       print("err");

@@ -54,7 +54,10 @@ class _ItemsScreenDetailsState extends State<ItemsScreenDetails> {
                     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: RawMaterialButton(
                         onPressed: (){
-                          Navigator.of(context).push(PageTransition(child: SpaceDetailsScreen(), type: PageTransitionType.rightToLeft));
+                          Navigator.of(context).push(PageTransition(child: SpaceDetailsScreen(
+                            EntityName: widget.weddingList != null ? widget.weddingList[index].permalink : widget.partyList != null ? widget.partyList[index].permalink : widget.corporateList != null ? widget.corporateList[index].permalink : null,
+                            entity_id: widget.weddingList != null ? widget.weddingList[index].entity_id : widget.partyList != null ? widget.partyList[index].entity_id : widget.corporateList != null ? widget.corporateList[index].entity_id : null,
+                          ), type: PageTransitionType.rightToLeft));
                         },
                         child: ItemsDeailsWidget(
                           name: widget.weddingList != null ? widget.weddingList[index].name : widget.partyList != null ? widget.partyList[index].name : widget.corporateList != null ? widget.corporateList[index].name : null,

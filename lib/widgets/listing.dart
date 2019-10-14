@@ -34,6 +34,7 @@ class Listing extends StatelessWidget {
         Row(
           children: <Widget>[
             Icon(Icons.people),
+            SizedBox(width: 5,),
             Text("300", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Environment.textColor))
           ],
         )

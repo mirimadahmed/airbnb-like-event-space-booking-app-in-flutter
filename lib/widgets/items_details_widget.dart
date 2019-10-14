@@ -26,7 +26,8 @@ class ItemsDeailsWidget extends StatelessWidget {
         Text(name ?? "Name",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),),
         Row(
           children: <Widget>[
-            Icon(icon ?? Icons.star_border),
+            Icon(icon ?? Icons.people),
+            SizedBox(width: 5,),
             Text(rate ?? "100",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),)
           ],
         ),

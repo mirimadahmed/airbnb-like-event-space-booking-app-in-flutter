@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:spacesly_app/model/entity_model.dart';
@@ -10,7 +8,6 @@ import 'package:spacesly_app/widgets/home_icon_card.dart';
 import 'package:spacesly_app/widgets/listing.dart';
 import 'package:page_transition/page_transition.dart';
 import '../environment_variable.dart';
-import 'package:spacesly_app/apis/entity_apis.dart';
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -132,7 +129,9 @@ class _HomePageState extends State<HomePage> {
                               Text("Top Wedding spaces in Islamabad", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Environment.textColor),),
                               InkWell(
                                   onTap: (){
-                                    Navigator.push(context, PageTransition(child: ItemsScreenDetails(), type: PageTransitionType.rightToLeft));
+                                    Navigator.push(context, PageTransition(child: ItemsScreenDetails(
+                                      weddingList: topWeddingData,
+                                    ), type: PageTransitionType.rightToLeft));
                                   },
                                   child: Text("See All", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Environment.textColor)))
                             ],
@@ -173,7 +172,9 @@ class _HomePageState extends State<HomePage> {
                               Text("Top Party spaces in Islamabad", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Environment.textColor),),
                               InkWell(
                                   onTap: (){
-                                    Navigator.push(context, PageTransition(child: ItemsScreenDetails(), type: PageTransitionType.rightToLeft));
+                                    Navigator.push(context, PageTransition(child: ItemsScreenDetails(
+                                      partyList: topParty,
+                                    ), type: PageTransitionType.rightToLeft));
                                   },
                                   child: Text("See All", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Environment.textColor)))
                             ],
@@ -214,7 +215,9 @@ class _HomePageState extends State<HomePage> {
                               Text("Top Corporate spaces in Islamabad", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Environment.textColor),),
                               InkWell(
                                   onTap: (){
-                                    Navigator.push(context, PageTransition(child: ItemsScreenDetails(), type: PageTransitionType.rightToLeft));
+                                    Navigator.push(context, PageTransition(child: ItemsScreenDetails(
+                                      corporateList: topCorporate,
+                                    ), type: PageTransitionType.rightToLeft));
                                   },
                                   child: Text("See All", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Environment.textColor)))
                             ],
