@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:dio/dio.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spacesly_app/single_entity_json/response.dart';
@@ -323,7 +324,10 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                                 || _controllerPhone.text == null
                                 ||_controllerNoOfGeusts.text == null
                                 || from.toString().isEmpty){
-
+                                  Flushbar(
+                                    message: "Please Completing the form",
+                                    duration: Duration(seconds: 2),
+                                  )..show(context);
                                 }else{
                                   _reserveEvent();
                                 }
@@ -460,13 +464,19 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
       ));
       print("event reserve res");
       if(res.statusCode.toString() == "200"){
-
+        Flushbar(
+          message: "Submited successfuly",
+          duration: Duration(seconds: 2),
+        )..show(context);
         setState(() {
           submit = false;
         });
       }
     }catch(e){
-
+      Flushbar(
+        message: "Smething wrong",
+        duration: Duration(seconds: 2),
+      )..show(context);
       print("err2");
       print(e.toString());
       setState(() {
