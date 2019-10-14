@@ -14,6 +14,7 @@ class BookingSpaceField extends StatelessWidget {
       padding: EdgeInsets.only(left: 15),
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: TextField(
+        controller: controller,
         keyboardType: inputType,
         cursorColor: Environment.textColor,
         decoration: InputDecoration(

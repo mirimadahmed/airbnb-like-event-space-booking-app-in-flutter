@@ -29,6 +29,7 @@ dependencies:
   dio:
   transparent_image:
   json_annotation:
+  toast:
 dev_dependencies:
   build_runner:
   json_serializable:

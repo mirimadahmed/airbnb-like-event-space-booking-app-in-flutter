@@ -7,7 +7,7 @@ import 'package:spacesly_app/widgets/book_space_field_widget.dart';
 import 'package:spacesly_app/widgets/header_secion_widget.dart';
 import 'package:intl/intl.dart';
 import '../environment_variable.dart';
-
+import 'package:toast/toast.dart';
 class SpaceDetailsScreen extends StatefulWidget {
   final String EntityName;
   final int entity_id;
@@ -20,6 +20,10 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
   ScrollController scrollController = ScrollController();
   bool flag = false;
   bool flag1 = false;
+  TextEditingController _controllerName;
+  TextEditingController _controllerPhone;
+  TextEditingController _controllerEmail;
+  TextEditingController _controllerNoOfGeusts;
   @override
   void initState() {
     super.initState();
@@ -27,6 +31,10 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
     print(widget.entity_id);
     _getSingleEntityData();
     _getAddonDetails();
+    _controllerName = TextEditingController();
+    _controllerPhone = TextEditingController();
+    _controllerEmail = TextEditingController();
+    _controllerNoOfGeusts = TextEditingController();
   }
   @override
   Widget build(BuildContext context) {
@@ -263,15 +271,18 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                         Text("Book this space", style: TextStyle(color: Environment.textColor, fontWeight: FontWeight.bold)),
                         SizedBox(height: 20,),
                         BookingSpaceField(
+                          controller: _controllerName,
                           labelText: 'Name',
                           hintText: 'yourName',
                         ),
                         BookingSpaceField(
+                          controller: _controllerPhone,
                           labelText: 'Phone',
                           hintText: '0000 0000000',
                           inputType: TextInputType.number,
                         ),
                         BookingSpaceField(
+                          controller: _controllerEmail,
                           labelText: 'Email',
                           hintText: 'example@mail.com',
                           inputType: TextInputType.emailAddress,
@@ -294,6 +305,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                           ),
                         ),
                         BookingSpaceField(
+                          controller: _controllerNoOfGeusts,
                           labelText: 'No of Guests',
                           hintText: '000',
                           inputType: TextInputType.number,
@@ -302,16 +314,23 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
                           margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                           height: 50,
                           decoration: BoxDecoration(
-                            color: Color.fromRGBO(230, 126, 34, 1.0),
+                            color: submit ? Colors.grey : Color.fromRGBO(230, 126, 34, 1.0),
                             borderRadius: BorderRadius.circular(2),
                           ),
                           child: RawMaterialButton(
-                              onPressed: (){
-                                scrollController.animateTo(
-                                  scrollController.position.minScrollExtent,
-                                  curve: Curves.easeOut,
-                                  duration: const Duration(milliseconds: 300),
-                                );
+                              onPressed: submit ? null  : () {
+                                if(_controllerName.text == null
+                                || _controllerEmail.text == null
+                                || _controllerPhone.text == null
+                                ||_controllerNoOfGeusts.text == null
+                                || from.toString().isEmpty){
+                                  Toast.show(
+                                      "Please Completing the form",context,
+                                  duration: Toast.LENGTH_SHORT,
+                                      gravity:  Toast.BOTTOM);
+                                }else{
+                                  _reserveEvent();
+                                }
                               },
 //                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
                               child: Center(child: Text("Submit", style: TextStyle(color: Colors.white),))),
@@ -418,6 +437,51 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> {
     }catch(e){
       print("err1");
       print(e.toString());
+    }
+  }
+
+  bool submit = false;
+  _reserveEvent()async{
+    setState(() {
+      submit = true;
+    });
+    try{
+      var res = await Dio().post("https://api.spacesly.com/api/requests/",data: {
+        "phone" : _controllerPhone.text,
+        "name" : _controllerName.text,
+        "email" : _controllerEmail.text,
+        "entity_id" : widget.entity_id,
+        "status" : "S",
+        "event_date" : from.toString(),
+        "event_type" : "",
+        "no_of_people" : _controllerNoOfGeusts.text,
+      },
+      options: Options(
+        headers: {
+          "Content-Type" : "application/json",
+          "Authorization" : "Token eec289046e39a2c707508c1c7aee9a327be2e1e5"
+        }
+      ));
+      print("event reserve res");
+      if(res.statusCode.toString() == "200"){
+        Toast.show(
+            "Submit successfully",context,
+            duration: Toast.LENGTH_LONG,
+            gravity:  Toast.BOTTOM);
+        setState(() {
+          submit = false;
+        });
+      }
+    }catch(e){
+      Toast.show(
+          "Something wrong contact your administrator",context,
+          duration: Toast.LENGTH_LONG,
+          gravity:  Toast.BOTTOM);
+      print("err2");
+      print(e.toString());
+      setState(() {
+        submit = false;
+      });
     }
   }
 }
